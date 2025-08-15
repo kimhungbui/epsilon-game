@@ -1,6 +1,6 @@
 # Epsilon Game
 
-This is a simple sci-fi text game built with React and TypeScript, using Vite for development and build tooling. The game features a branching narrative with puzzles and choices that affect the outcome.
+This is a simple sci-fi text game built with React and TypeScript, using Vite for development and build tooling. The game features a branching narrative with puzzles and choices that affect the outcome. It is designed to be easily extensible, allowing for new scenes and puzzles to be added.
 
 
 # React + TypeScript + Vite
