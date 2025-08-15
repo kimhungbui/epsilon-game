@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, 
+  useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Choice {
@@ -68,7 +69,7 @@ function isCorrect(userInput: string, answer: string) {
   return a.toLowerCase() === b.toLowerCase();
 }
 
-function SceneView({ scene, onChoose, onSolve, flags }: { scene: Scene; onChoose: any; onSolve: any; flags: string[] }) {
+function SceneView({ scene, onChoose, onSolve }: { scene: Scene; onChoose: any; onSolve: any; flags: string[] }) {
   const hasPuzzle = !!scene.puzzle;
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -177,39 +178,84 @@ return (
 );
 }
 
-export default function SciFiTextGame({ chapterFile = "chapter1.json" }: { chapterFile?: string }) {
+
+interface GameState {
+  current: string;
+  flags: string[];
+  history: string[];
+  complete: boolean;
+}
+
+
+export default function SciFiTextGame({
+  chapterFile = "chapter1.json",
+}: { chapterFile?: string }) {
   const [chapter, setChapter] = useState<Chapter | null>(null);
-  const [state, setState] = usePersistentState({ current: "scene_001", flags: [], history: [], complete: false });
+
+  // Simple persistent state without generics
+  const [state, setState] = usePersistentState({
+    current: "scene_001" as string,
+    flags: [] as string[],
+    history: [] as string[],
+    complete: false as boolean,
+  });
 
   useEffect(() => {
     fetch(`/chapters/${chapterFile}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setChapter(data);
-        if (!state.current) setState(s => ({ ...s, current: data.scenes[0].id, history: [data.scenes[0].id] }));
-      })
-      .catch(err => console.error("Failed to load chapter:", err));
-  }, [chapterFile]);
 
+        // Type the previous state
+        if (!state.current) {
+          setState((s: GameState) => ({
+            ...s,
+            current: data.scenes[0].id,
+            history: [data.scenes[0].id],
+          }));
+        }
+      })
+      .catch((err) => console.error("Failed to load chapter:", err));
+  }, [chapterFile]);
   if (!chapter) return <div>Loading chapter...</div>;
 
   const sceneMap = Object.fromEntries(chapter.scenes.map(s => [s.id, s]));
   const scene = state.current === "chapter_end" ? null : sceneMap[state.current];
 
-  const goTo = (id: string) => {
-    if (id === "chapter_end") {
-      setState(s => ({ ...s, current: id, complete: true, history: [...s.history, id] }));
-      return;
-    }
-    if (!sceneMap[id]) return;
-    setState(s => ({ ...s, current: id, history: [...s.history, id] }));
-  };
+const goTo = (id: string) => {
+  if (id === "chapter_end") {
+    setState((s: GameState) => ({
+      ...s,
+      current: id,
+      complete: true,
+      history: [...s.history, id],
+    }));
+    return;
+  }
+  if (!sceneMap[id]) return;
+  setState((s: GameState) => ({
+    ...s,
+    current: id,
+    history: [...s.history, id],
+  }));
+};
 
-  const onChoose = (next: string) => goTo(next);
-  const onSolve = ({ ok, next, flags }: { ok: boolean; next: string; flags: string[] }) => {
-    setState(s => ({ ...s, flags: Array.from(new Set([...s.flags, ...flags])) }));
-    goTo(next);
-  };
+const onChoose = (next: string) => goTo(next);
+
+const onSolve = ({
+  next,
+  flags,
+}: {
+  ok: boolean;
+  next: string;
+  flags: string[];
+}) => {
+  setState((s: GameState) => ({
+    ...s,
+    flags: Array.from(new Set([...s.flags, ...flags])),
+  }));
+  goTo(next);
+};
 
   const reset = () => {
     clearSave();
