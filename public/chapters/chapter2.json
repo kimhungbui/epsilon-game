@@ -1,0 +1,73 @@
+{
+  "chapter": "2",
+  "title": "The Signal Deepens",
+  "scenes": [
+    {
+      "id": "scene_001",
+      "title": "Back on Earth, 2025",
+      "text": "After analyzing the data from Epsilon Station, you’re back on Earth. The observatory’s dome creaks as technicians adjust the sensors. The same mysterious signal pulses through your screens, faint but unmistakable.\n\nThe question: Could this be the start of a pattern that spans both space and time?",
+      "choices": [
+        { "label": "Run a Fourier analysis on the signal", "next": "scene_002" },
+        { "label": "Check historical archives for similar patterns", "next": "scene_003" }
+      ]
+    },
+{
+  "id": "scene_002",
+  "title": "Fourier Analysis",
+  "text": "You feed the signal data into the analysis software. Peaks emerge at unexpected intervals. It seems the signal is composed of multiple periodic components.",
+  "puzzle": {
+    "type": "math",
+    "concept": "Fourier frequencies",
+    "question": "Identify the fundamental frequency given the peaks at 0.3 Hz, 0.9 Hz, and 1.5 Hz.",
+    "answer": "0.3",
+    "success_next": "scene_004",
+    "fail_next": "scene_004_fail",
+    "animation": "FourierDecomposition.mp4",
+    "explanation": "The fundamental frequency is the smallest frequency that repeats across all observed peaks."
+  }
+},
+    {
+      "id": "scene_003",
+      "title": "Historical Archives",
+      "text": "You scan decades of archival signals. One pattern catches your eye: a repeating sequence every 13.2 seconds from observations 30 years ago. Could it be connected to Epsilon Station?",
+      "choices": [
+        { "label": "Compare with current station data", "next": "scene_002" },
+        { "label": "Alert your supervisor", "next": "scene_005" }
+      ]
+    },
+    {
+      "id": "scene_004",
+      "title": "Pattern Confirmed",
+      "text": "Your analysis confirms a fundamental frequency at 0.3 Hz. The alignment is too precise to be random. Something is intentionally encoded in the signal.",
+      "choices": [
+        { "label": "Prepare a deeper analysis", "next": "scene_006" }
+      ],
+      "flags_set": ["solved_puzzle_ch2"]
+    },
+    {
+      "id": "scene_004_fail",
+      "title": "Analysis Inconclusive",
+      "text": "You can’t determine the fundamental frequency clearly. Perhaps more data or a different approach is needed.",
+      "choices": [
+        { "label": "Try alternative analysis", "next": "scene_006" }
+      ],
+      "flags_set": ["failed_puzzle_ch2"]
+    },
+    {
+      "id": "scene_005",
+      "title": "Supervisor Alert",
+      "text": "Your supervisor frowns at the alert: 'This might be more serious than a simple anomaly. Let’s prioritize the analysis immediately.'",
+      "choices": [
+        { "label": "Run Fourier analysis", "next": "scene_002" }
+      ]
+    },
+    {
+      "id": "scene_006",
+      "title": "Preparing Deeper Analysis",
+      "text": "You prepare to run a series of signal decompositions and simulations, hoping to uncover hidden patterns or messages.",
+      "choices": [
+        { "label": "End of Chapter 2", "next": "chapter_end" }
+      ]
+    }
+  ]
+}
