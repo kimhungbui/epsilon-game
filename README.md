@@ -3,6 +3,13 @@
 This is a simple sci-fi text game built with React and TypeScript, using Vite for development and build tooling. The game features a branching narrative with puzzles and choices that affect the outcome. It is designed to be easily extensible, allowing for new scenes and puzzles to be added.
 
 
+# TODO
+
+- [ ] Theme to dark
+
+- [ ] Change tab name and icon
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
