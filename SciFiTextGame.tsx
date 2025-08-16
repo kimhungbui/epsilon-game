@@ -201,7 +201,7 @@ export default function SciFiTextGame({
   });
 
   useEffect(() => {
-    fetch(`/chapters/${chapterFile}`)
+    fetch(`${import.meta.env.BASE_URL}chapters/${chapterFile}`)
       .then((res) => res.json())
       .then((data) => {
         setChapter(data);
