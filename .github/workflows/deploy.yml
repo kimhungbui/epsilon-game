@@ -19,7 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
+      - name: Generate index file
+        run: npm run generate-index
       - name: Build project
         run: npm run build
 
