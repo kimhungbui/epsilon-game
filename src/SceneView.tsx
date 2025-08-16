@@ -15,56 +15,76 @@ export function SceneView({ scene, onChoose, onSolve }: Props) {
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [showAnim, setShowAnim] = useState(false);
-  console.log(">> SceneView mounted with id:", scene.id);
-  console.log("Puzzle concept:", scene.puzzle?.concept);
-  console.log("Registry keys:", Object.keys(puzzleRegistry)); 
-  // 1. Look up puzzle component dynamically
-// Inside SceneView
-const [puzzleResult, setPuzzleResult] = useState<null | { ok: boolean; next: string; flags: string[] }>(null);
 
-if (hasPuzzle && scene.puzzle?.concept && puzzleRegistry[scene.puzzle.concept]) {
-  const PuzzleComp = puzzleRegistry[scene.puzzle.concept];
-  return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-slate-100">{scene.title}</h2>
-      <div className="space-y-3">{paragraphs(scene.text)}</div>
+  const [puzzleResult, setPuzzleResult] = useState<
+    null | { ok: boolean; next: string; flags: string[] }
+  >(null);
 
-      {!puzzleResult ? (
-        <PuzzleComp
-          onSolve={(ok) => {
-            const next = ok ? scene.puzzle!.success_next : scene.puzzle!.fail_next;
-            setPuzzleResult({
-              ok,
-              next,
-              flags: ok ? scene.flags_set ?? ["solved_puzzle"] : scene.flags_set ?? ["failed_puzzle"],
-            });
-          }}
-        />
-      ) : (
-        <div className="space-y-3">
-          <div className="text-slate-200">
-            {puzzleResult.ok ? "✅ You solved it!" : "❌ Not correct, but you can continue."}
+  // --- Custom puzzle path (registry) ---
+  if (hasPuzzle && scene.puzzle?.concept && puzzleRegistry[scene.puzzle.concept]) {
+    const PuzzleComp = puzzleRegistry[scene.puzzle.concept];
+    return (
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-slate-100">{scene.title}</h2>
+        <div className="space-y-3">{paragraphs(scene.text)}</div>
+
+        {!puzzleResult ? (
+          <PuzzleComp
+            onSolve={(ok) => {
+              const next = ok ? scene.puzzle!.success_next : scene.puzzle!.fail_next;
+              setPuzzleResult({
+                ok,
+                next,
+                flags: ok
+                  ? scene.flags_set ?? ["solved_puzzle"]
+                  : scene.flags_set ?? ["failed_puzzle"],
+              });
+            }}
+          />
+        ) : (
+          <div className="space-y-3">
+            <div className="text-slate-200">
+              {puzzleResult.ok ? "✅ You solved it!" : "❌ Not correct, but you can continue."}
+            </div>
+
+            {/* Explanation + animation */}
+            {scene.puzzle?.explanation && (
+              <div className="p-3 bg-slate-800 rounded-xl text-slate-200 text-sm">
+                {scene.puzzle.explanation}
+              </div>
+            )}
+            {scene.puzzle?.animation && (
+              <div className="aspect-video mt-2">
+                <iframe
+                  className="w-full h-full rounded-xl"
+                  src={`https://www.youtube.com/embed/${scene.puzzle.animation}`}
+                  title="Puzzle explanation"
+                  allowFullScreen
+                />
+              </div>
+            )}
+
+            <button
+              className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500"
+              onClick={() => onSolve(puzzleResult)}
+            >
+              Continue
+            </button>
           </div>
-          <button
-            className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500"
-            onClick={() => onSolve(puzzleResult)}
-          >
-            Continue
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+        )}
+      </div>
+    );
+  }
 
-  // 2. Fallback: generic puzzle or choices
+  // --- Generic puzzle path ---
   const handleSubmit = () => {
     if (!hasPuzzle) return;
     const ok = isCorrect(input, scene.puzzle!.answer);
     setFeedback(ok ? "Correct." : "Not quite. Continue for now.");
 
-    if (ok && scene.puzzle?.animation) setShowAnim(true);
-    else {
+    if (ok && scene.puzzle?.animation) {
+      setShowAnim(true);
+    } else {
       const next = ok ? scene.puzzle!.success_next : scene.puzzle!.fail_next;
       onSolve({
         ok,
@@ -79,7 +99,6 @@ if (hasPuzzle && scene.puzzle?.concept && puzzleRegistry[scene.puzzle.concept]) 
       <h2 className="text-xl font-semibold text-slate-100">{scene.title}</h2>
       <div className="space-y-3">{paragraphs(scene.text)}</div>
 
-      {/* Generic puzzle input */}
       {hasPuzzle && !showAnim && (
         <div className="mt-4 flex flex-col gap-2">
           <div className="text-sm text-slate-400">Puzzle — {scene.puzzle!.concept}</div>
@@ -100,6 +119,39 @@ if (hasPuzzle && scene.puzzle?.concept && puzzleRegistry[scene.puzzle.concept]) 
             </button>
           </div>
           {feedback && <div className="text-sm text-slate-300">{feedback}</div>}
+        </div>
+      )}
+
+      {/* Explanation + animation */}
+      {showAnim && (
+        <div className="space-y-3">
+          {scene.puzzle?.explanation && (
+            <div className="p-3 bg-slate-800 rounded-xl text-slate-200 text-sm">
+              {scene.puzzle.explanation}
+            </div>
+          )}
+          {scene.puzzle?.animation && (
+            <div className="aspect-video mt-2">
+              <iframe
+                className="w-full h-full rounded-xl"
+                src={`https://www.youtube.com/embed/${scene.puzzle.animation}`}
+                title="Puzzle explanation"
+                allowFullScreen
+              />
+            </div>
+          )}
+          <button
+            className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500"
+            onClick={() =>
+              onSolve({
+                ok: true,
+                next: scene.puzzle!.success_next,
+                flags: scene.flags_set ?? ["solved_puzzle"],
+              })
+            }
+          >
+            Continue
+          </button>
         </div>
       )}
 
