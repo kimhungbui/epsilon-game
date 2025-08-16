@@ -1,0 +1,56 @@
+{
+"chapter": "1",
+"title": "The Signal That Shouldn’t Exist",
+"scenes": [
+{
+"id": "scene_001",
+"title": "Arrival at Epsilon Station",
+"text": "The docking clamps lock with a hollow clang. Outside your viewport, Gliese 581g hangs like a dark jewel, its faint clouds illuminated by the station’s dim floodlights.\n\nThree weeks ago, Epsilon Station detected a signal — repeating every 13.2 seconds, with an intensity pattern that defies natural explanation. The crew’s whispers hint at something more… deliberate.",
+"choices": [
+{ "label": "Head directly to the comms room", "next": "scene_002" },
+{ "label": "Seek out the chief engineer", "next": "scene_004" }
+]
+},
+{
+"id": "scene_002",
+"title": "Comms Room Analysis",
+"text": "Banks of monitors show the signal as jagged peaks. The technician hands you a tablet with two numbers highlighted: Station orbit period = 1987.5 seconds. Signal repeat = 13.2 seconds.\n\nThe question: Are these harmonically related, or is the timing purely coincidental?",
+"puzzle": {
+"type": "math",
+"concept": "GCD and periodicity",
+"question": "Find the greatest common divisor of 1987.5 and 13.2 seconds.",
+"answer": "0.3",
+"success_next": "scene_003",
+"fail_next": "scene_003_fail",
+"animation": "RtRqmxhubKE",
+"explanation": "The GCD (Greatest Common Divisor) shows the smallest time interval where the station’s orbit period and the signal repeat period align. Even though 1987.5 / 13.2 is not an integer, the GCD = 0.3 seconds indicates a subtle resonance. This suggests the signal is artificially timed to interact with the station’s orbit cycles, hinting at an intentional pattern rather than a natural occurrence. It reveals a hidden structure and a repeating alignment of the two cycles every 0.3 seconds, which is critical for understanding the mystery behind the signal."
+}
+},
+{
+"id": "scene_003",
+"title": "Pattern Recognition",
+"text": "You run the calculations. The periods share a subtle resonance — a GCD of 0.3 seconds. Not random. Not natural.\n\nThis changes everything. You mark the result in your log and begin triangulating the signal’s source.",
+"choices": [
+{ "label": "Proceed to speak with the engineer", "next": "scene_004" }
+],
+"flags_set": ["solved_puzzle"]
+},
+{
+"id": "scene_003_fail",
+"title": "Uncertain Conclusion",
+"text": "You’re not convinced. The numbers seem unrelated. You mark the result as inconclusive and move on.\n\nPerhaps the engineer will have more to share.",
+"choices": [
+{ "label": "Proceed to speak with the engineer", "next": "scene_004" }
+],
+"flags_set": ["failed_puzzle"]
+},
+{
+"id": "scene_004",
+"title": "The Engineer’s Warning",
+"text": "The chief engineer leans in close, voice low: ‘The signal’s amplitude matches fluctuations in our power core output. It’s not just out there… it’s interacting with us.’\n\nIf you solved the earlier puzzle, this statement chills you — it means the source is local. If you didn’t, you suspect it’s just a distant pulsar.",
+"choices": [
+{ "label": "End of Chapter 1", "next": "chapter_end" }
+]
+}
+]
+}
